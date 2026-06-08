@@ -31,6 +31,23 @@
     <div class="app-container">
         <div class="sidebar">
 
+<div class="profile-card">
+
+    <h3 id="profileName">
+        User
+    </h3>
+
+    <p id="profileEmail">
+        user@email.com
+    </p>
+      <button
+        onclick="logout()"
+    >
+        Logout
+    </button>
+
+</div>
+
     <button
         class="new-chat-btn"
         onclick="newChat()"
@@ -145,7 +162,7 @@
 >
 
     Flashcards
-
+</button>
 
                 <button
 
@@ -170,17 +187,24 @@
                     Speak
 
                 </button>
+
+                <button
+    class="main-btn danger"
+    onclick="stopSpeaking()"
+>
+    Stop
+</button>
+
            <button
 
     class="main-btn secondary"
-
-    onclick="window.location.href='./dashboard.html'"
-
+    onclick="openDashboard()"
 >
 
     Dashboard
 
 </button>
+
             </div>
 
             <!-- =================================

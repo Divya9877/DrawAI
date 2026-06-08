@@ -9,9 +9,9 @@ import json
 # API KEYS
 # =====================================================
 
-GEMINI_API_KEY = "Your_api_key"
+GEMINI_API_KEY = "Your_Gemini_API_Key_Here"
 
-TRIPO_API_KEY = "Your_api_key"
+TRIPO_API_KEY = "Your_Tripo_API_Key_Here"
 
 # =====================================================
 # GEMINI CLIENT

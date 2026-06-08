@@ -524,3 +524,45 @@ body{
 
     margin-right:40px;
 }
+.profile-card{
+
+    padding:15px;
+
+    margin-bottom:15px;
+
+    border-radius:12px;
+
+    background:#101a38;
+
+    text-align:center;
+}
+
+.profile-card h3{
+
+    margin:0;
+    color:white;
+}
+
+.profile-card p{
+
+    margin-top:5px;
+
+    font-size:12px;
+
+    color:#bdbdbd;
+}
+
+.logout-btn{
+
+    margin-top:10px;
+
+    width:100%;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:8px;
+
+    cursor:pointer;
+}

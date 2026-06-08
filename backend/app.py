@@ -602,6 +602,7 @@ def smart_predict(img, base64_img):
 # AUTH
 # ==========================================
 
+
 @app.route(
     '/signup',
     methods=['POST']
@@ -646,6 +647,7 @@ def signup():
         return jsonify({
             "message":"Email already exists"
         })
+    
     
 @app.route(
     '/login',

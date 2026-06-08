@@ -6,7 +6,7 @@ from PIL import Image
 # ==========================================
 
 client = genai.Client(
-    api_key="YOUR_API_KEY"
+    api_key="AIzaSyB3UBNkX_S7gnJW_JxM-pATB_vzmAR1uBY"
 )
 
 # ==========================================

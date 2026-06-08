@@ -301,8 +301,19 @@ async function predictDrawing(){
         const data =
             await response.json();
 
+        // Save label
+
         lastLabel =
             data.label;
+
+        localStorage.setItem(
+
+            "lastLabel",
+
+            data.label
+        );
+
+        // Show prediction
 
         document.getElementById(
 
@@ -321,6 +332,26 @@ async function predictDrawing(){
             ${data.confidence}%
         </p>
         `;
+
+        // Save prediction for restore
+
+        localStorage.setItem(
+
+            "predictionBox",
+
+            document.getElementById(
+                "predictionBox"
+            ).innerHTML
+        );
+
+        // Save canvas
+
+        localStorage.setItem(
+
+            "savedCanvas",
+
+            canvas.toDataURL()
+        );
 
         getExplanation(
             data.label
@@ -372,12 +403,16 @@ async function getExplanation(label){
 
             "chatMessages"
 
-        ).innerHTML =
+        ).innerHTML +=
 
         `<p>
         <b>AI:</b>
         ${data.info}
         </p>`;
+        localStorage.setItem(
+    "explanation",
+    data.info
+);
     }
 
     catch(error){
@@ -430,7 +465,12 @@ async function open3D(){
 
             data.model
         ){
+           localStorage.setItem(
+    "savedCanvas",
+    canvas.toDataURL()
+);
 
+saveConversation();
             window.location.href =
 
                 "viewer.html?model=" +
@@ -462,25 +502,36 @@ async function open3D(){
    SPEAK
 ========================================= */
 
+let speechUtterance = null;
+
 function speakExplanation(){
 
     const text =
 
         document.getElementById(
-            "explanationBox"
+            "chatMessages"
         ).innerText;
 
     if(!text) return;
 
-    const utterance =
+    window.speechSynthesis.cancel();
+
+    speechUtterance =
 
         new SpeechSynthesisUtterance(
             text
         );
 
-    speechSynthesis.speak(
-        utterance
+    window.speechSynthesis.speak(
+        speechUtterance
     );
+}
+
+function stopSpeaking(){
+
+    window.speechSynthesis.cancel();
+
+    speechUtterance = null;
 }
 
 /* =========================================
@@ -498,6 +549,7 @@ async function sendMessage(){
         input.value.trim();
 
     if(!message) return;
+    saveChat(message);
 
     input.value = "";
 
@@ -513,6 +565,7 @@ async function sendMessage(){
     `<div class="user-bubble">
         ${message}
     </div>`;
+
 
     try{
 
@@ -548,6 +601,7 @@ async function sendMessage(){
         `<div class="ai-bubble">
             ${data.reply}
         </div>`;
+        saveConversation();
 
         chatMessages.scrollTop =
             chatMessages.scrollHeight;
@@ -677,11 +731,48 @@ function startVoiceChat(){
         );
     };
 }
+
 function openFlashcards(){
+
+    localStorage.setItem(
+        "savedCanvas",
+        canvas.toDataURL()
+    );
+
+    saveConversation();
 
     window.location.href =
         "flashcards.html";
 }
+function logout(){
+
+    localStorage.removeItem(
+        "user_id"
+    );
+
+    localStorage.removeItem(
+        "user_name"
+    );
+
+    window.location.href =
+        "login.html";
+}
+
+function openDashboard(){
+
+    localStorage.setItem(
+
+        "savedCanvas",
+
+        canvas.toDataURL()
+    );
+
+    saveConversation();
+
+    window.location.href =
+        "dashboard.html";
+}
+
 function saveChat(message){
 
     const userId =
@@ -704,7 +795,10 @@ function saveChat(message){
 
         ) || [];
 
-    chats.unshift(message);
+    if(!chats.includes(message)){
+
+        chats.unshift(message);
+    }
 
     localStorage.setItem(
 
@@ -740,8 +834,7 @@ function loadRecentChats(){
 
     let html = "";
 
-    chats.slice(0,10)
-    .forEach(chat => {
+    chats.forEach(chat => {
 
         html += `
 
@@ -756,13 +849,38 @@ function loadRecentChats(){
 
     document.getElementById(
         "chatHistory"
-    ).innerHTML = html;
+    ).innerHTML =
+    html;
 }
 
+function loadConversation(){
+
+    const userId =
+
+        localStorage.getItem(
+            "user_id"
+        );
+
+    const oldChat =
+
+        localStorage.getItem(
+
+            `conversation_${userId}`
+
+        );
+
+    if(oldChat){
+
+        document.getElementById(
+
+            "chatMessages"
+
+        ).innerHTML = oldChat;
+    }
+}
 function newChat(){
 
     document.getElementById(
         "chatMessages"
     ).innerHTML = "";
 }
-loadRecentChats();

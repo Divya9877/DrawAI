@@ -651,6 +651,7 @@ function signup(){
 
     .then(data=>{
 
+
         document.getElementById(
             "msg"
         ).innerText = data.message;
@@ -688,6 +689,7 @@ function login(){
     .then(res=>res.json())
 
     .then(data=>{
+        console.log(data);
 
         if(data.success){
 
@@ -696,10 +698,18 @@ function login(){
                 data.user_id
             );
 
-            localStorage.setItem(
-                "user_name",
-                data.name
-            );
+           localStorage.setItem(
+    "user_name",
+    data.name
+);
+
+localStorage.setItem(
+    "user_email",
+
+    document.getElementById(
+        "loginEmail"
+    ).value
+);
 
             window.location.href =
                 "index.html";
