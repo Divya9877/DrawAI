@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DrawAI 3D Viewer</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+
+<style>
+
+:root{
+    --bg:#0b1020;
+    --panel:#12182b;
+    --border:#2c3553;
+    --text:#f5f7ff;
+    --muted:#9aa5c3;
+    --accent:#7c8cff;
+    --accent2:#5de4c7;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    background:var(--bg);
+    font-family:'Inter',sans-serif;
+    color:white;
+}
+
+/* BACKGROUND */
+
+.bg{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-2;
+}
+
+.glow{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:0.18;
+}
+
+.glow1{
+    width:400px;
+    height:400px;
+    background:#5b7cff;
+    top:-120px;
+    left:-100px;
+}
+
+.glow2{
+    width:350px;
+    height:350px;
+    background:#00d4ff;
+    bottom:-120px;
+    right:-120px;
+}
+
+.grid{
+    position:fixed;
+    inset:0;
+    background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size:40px 40px;
+    z-index:-1;
+}
+
+/* TOP BAR */
+
+.topbar{
+    position:fixed;
+    top:20px;
+    left:20px;
+    right:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    z-index:20;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logo-icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:linear-gradient(135deg,#7c8cff,#5de4c7);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#000;
+    font-weight:700;
+}
+
+.logo h1{
+    font-size:20px;
+    margin-bottom:2px;
+}
+
+.logo p{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.top-actions{
+    display:flex;
+    gap:12px;
+}
+
+.action-btn{
+    border:none;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    color:white;
+    padding:12px 18px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:0.25s;
+    backdrop-filter:blur(10px);
+    font-weight:600;
+}
+
+.action-btn:hover{
+    transform:translateY(-2px);
+    background:rgba(255,255,255,0.09);
+}
+
+/* INFO PANEL */
+
+.info-panel{
+    position:fixed;
+    bottom:24px;
+    left:24px;
+    width:340px;
+    background:rgba(15,20,35,0.72);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:24px;
+    padding:22px;
+    backdrop-filter:blur(20px);
+    z-index:20;
+    box-shadow:
+    0 20px 50px rgba(0,0,0,0.35);
+}
+
+.info-label{
+    color:var(--muted);
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+}
+
+.info-title{
+    font-size:24px;
+    margin-bottom:12px;
+}
+
+.info-text{
+    color:#cfd7f5;
+    line-height:1.8;
+    font-size:14px;
+}
+
+/* LOADER */
+
+.loader{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:20px;
+    background:#0b1020;
+    z-index:100;
+    transition:0.4s;
+}
+
+.spinner{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    border:4px solid rgba(255,255,255,0.1);
+    border-top:4px solid #7c8cff;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.loader h2{
+    font-size:20px;
+}
+
+.loader p{
+    color:var(--muted);
+}
+
+/* BADGE */
+
+.badge{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    background:rgba(15,20,35,0.75);
+    border:1px solid rgba(255,255,255,0.08);
+    padding:14px 18px;
+    border-radius:16px;
+    backdrop-filter:blur(20px);
+    color:#cfd7f5;
+    font-size:14px;
+    z-index:20;
+}
+
+canvas{
+    display:block;
+}
+
+@media(max-width:900px){
+
+    .info-panel{
+        width:calc(100% - 48px);
+    }
+
+    .topbar{
+        flex-direction:column;
+        gap:18px;
+        align-items:flex-start;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg">
+
+    <div class="glow glow1"></div>
+
+    <div class="glow glow2"></div>
+
+</div>
+
+<div class="grid"></div>
+
+<!-- LOADER -->
+
+<div class="loader" id="loader">
+
+    <div class="spinner"></div>
+
+    <h2>Generating 3D Workspace</h2>
+
+    <p>Loading intelligent visualization...</p>
+
+</div>
+
+<!-- TOP BAR -->
+
+<div class="topbar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            AI
+        </div>
+
+        <div>
+
+            <h1>DrawAI Viewer</h1>
+
+            <p>Interactive 3D Visualization</p>
+
+        </div>
+
+    </div>
+
+    <div class="top-actions">
+
+        <button class="action-btn" onclick="resetCamera()">
+            Reset View
+        </button>
+
+        <button class="action-btn" onclick="toggleRotation()">
+            Toggle Rotation
+        </button>
+
+        <button class="action-btn" onclick="window.close()">
+            Close
+        </button>
+
+    </div>
+
+</div>
+
+<!-- INFO -->
+
+<div class="info-panel">
+
+    <div class="info-label">
+        Object Analysis
+    </div>
+
+    <div class="info-title" id="objectTitle">
+        3D Model
+    </div>
+
+    <div class="info-text" id="infoBox">
+
+        Click on different regions of the object to inspect parts and structures.
+
+    </div>
+
+</div>
+
+<div class="badge">
+    AI-powered 3D concept visualization
+</div>
+
+<script>
+
+/* MODEL PARAM */
+
+const params =
+    new URLSearchParams(window.location.search);
+
+const modelName =
+    params.get("model");
+
+if(!modelName){
+
+    alert("No model found");
+
+}
+
+/* SCENE */
+
+const scene = new THREE.Scene();
+
+scene.fog =
+    new THREE.Fog(0x0b1020, 6, 16);
+
+/* CAMERA */
+
+const camera =
+    new THREE.PerspectiveCamera(
+
+        75,
+
+        window.innerWidth / window.innerHeight,
+
+        0.1,
+
+        1000
+    );
+
+camera.position.set(0,1.5,4);
+
+/* RENDERER */
+
+const renderer =
+    new THREE.WebGLRenderer({
+
+        antialias:true,
+
+        alpha:true
+    });
+
+renderer.setPixelRatio(window.devicePixelRatio);
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.outputEncoding =
+    THREE.sRGBEncoding;
+
+document.body.appendChild(
+    renderer.domElement
+);
+
+/* CONTROLS */
+
+const controls =
+    new THREE.OrbitControls(
+
+        camera,
+
+        renderer.domElement
+    );
+
+controls.enableDamping = true;
+
+controls.dampingFactor = 0.06;
+
+controls.autoRotate = true;
+
+controls.autoRotateSpeed = 1;
+
+/* LIGHTING */
+
+const ambient =
+    new THREE.AmbientLight(
+        0xffffff,
+        1.2
+    );
+
+scene.add(ambient);
+
+const dir1 =
+    new THREE.DirectionalLight(
+        0x7c8cff,
+        2
+    );
+
+dir1.position.set(5,5,5);
+
+scene.add(dir1);
+
+const dir2 =
+    new THREE.DirectionalLight(
+        0x5de4c7,
+        2
+    );
+
+dir2.position.set(-5,4,-5);
+
+scene.add(dir2);
+
+const point =
+    new THREE.PointLight(
+        0xffffff,
+        2,
+        20
+    );
+
+point.position.set(0,4,0);
+
+scene.add(point);
+
+/* MODEL */
+
+let model;
+
+const loader =
+    new THREE.GLTFLoader();
+
+const path =
+    "http://127.0.0.1:5000/generated_3d/" +
+    modelName;
+
+loader.load(
+
+    path,
+
+    function(gltf){
+
+        model = gltf.scene;
+
+        model.traverse((child)=>{
+
+            if(child.isMesh){
+
+                child.castShadow = true;
+
+                child.receiveShadow = true;
+
+                if(child.material){
+
+                    child.material.metalness = 0.2;
+
+                    child.material.roughness = 0.5;
+                }
+            }
+        });
+
+        /* CENTER MODEL */
+
+        const box =
+            new THREE.Box3().setFromObject(model);
+
+        const center =
+            box.getCenter(new THREE.Vector3());
+
+        const size =
+            box.getSize(new THREE.Vector3()).length();
+
+        model.position.sub(center);
+
+        const scale = 2.5 / size;
+
+        model.scale.set(scale,scale,scale);
+
+        scene.add(model);
+
+        /* TITLE */
+
+        document.getElementById(
+            "objectTitle"
+        ).innerText =
+            modelName.replace(".glb","");
+
+        /* HIDE LOADER */
+
+        setTimeout(()=>{
+
+            document.getElementById(
+                "loader"
+            ).style.opacity = "0";
+
+            setTimeout(()=>{
+
+                document.getElementById(
+                    "loader"
+                ).style.display = "none";
+
+            },400);
+
+        },700);
+
+    },
+
+    undefined,
+
+    function(error){
+
+        console.error(error);
+
+        alert("Failed to load model");
+    }
+);
+
+/* INTERACTION */
+
+const raycaster =
+    new THREE.Raycaster();
+
+const mouse =
+    new THREE.Vector2();
+
+window.addEventListener("click",(event)=>{
+
+    mouse.x =
+        (event.clientX / window.innerWidth) * 2 - 1;
+
+    mouse.y =
+        -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse,camera);
+
+    const intersects =
+        raycaster.intersectObjects(
+            scene.children,
+            true
+        );
+
+    if(intersects.length > 0){
+
+        const clicked =
+            intersects[0].object.name.toLowerCase();
+
+        let description =
+            "Interactive geometry detected.";
+
+        if(clicked.includes("leaf") ||
+           clicked.includes("sphere")){
+
+            description =
+            "Leaf structure identified. This region represents organic surface geometry.";
+
+        }else if(clicked.includes("trunk") ||
+                 clicked.includes("cylinder")){
+
+            description =
+            "Main structural trunk identified. This provides foundational support.";
+
+        }else if(clicked.includes("branch")){
+
+            description =
+            "Branch extension detected. Used for structural distribution.";
+
+        }else if(clicked.includes("root")){
+
+            description =
+            "Root structure detected. This area stabilizes the object.";
+
+        }else if(clicked.includes("fruit")){
+
+            description =
+            "Fruit or external feature identified.";
+
+        }
+
+        document.getElementById(
+            "infoBox"
+        ).innerText = description;
+    }
+});
+
+/* ACTIONS */
+
+function resetCamera(){
+
+    camera.position.set(0,1.5,4);
+
+    controls.reset();
+}
+
+function toggleRotation(){
+
+    controls.autoRotate =
+        !controls.autoRotate;
+}
+
+/* RESIZE */
+
+window.addEventListener("resize",()=>{
+
+    camera.aspect =
+        window.innerWidth /
+        window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+});
+
+/* ANIMATION */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    if(model){
+
+        model.rotation.y += 0.0015;
+    }
+
+    controls.update();
+
+    renderer.render(scene,camera);
+}
+
+animate();
+
+</script>
+
+</body>
+</html>

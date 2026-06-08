@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Flashcards</title>
+
+    <link rel="stylesheet"
+          href="css/flashcards.css">
+
+</head>
+
+<body>
+
+    <div class="page">
+
+        <h1>
+            📚 My Learning Flashcards
+        </h1>
+
+        <div id="cardCounter">
+        </div>
+        <div id="scoreBoard">
+
+    Score: 0 / 0
+
+</div>
+
+       <div class="content-row">
+
+    <div
+        class="flashcard-container"
+        onclick="flipCard()"
+    >
+
+        <div
+            id="flashcard"
+            class="flashcard"
+        >
+
+            <div class="front">
+
+                <img
+                    id="cardImage"
+                    src=""
+                >
+
+                <h2 id="cardTitle">
+                </h2>
+
+                <p>
+                    Tap Card To Flip
+                </p>
+
+            </div>
+
+            <div class="back">
+
+                <h2 id="backTitle">
+                </h2>
+
+                <p id="cardDescription">
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+<div
+    class="quiz-panel"
+    id="quizSection"
+    style="display:none;"
+>
+
+    <h2>
+        🧠 Quiz Time
+    </h2>
+
+    <div id="quizContainer"></div>
+
+    <div id="answerButtons">
+
+        <button onclick="checkAnswer('A')">A</button>
+        <button onclick="checkAnswer('B')">B</button>
+        <button onclick="checkAnswer('C')">C</button>
+        <button onclick="checkAnswer('D')">D</button>
+
+    </div>
+
+    <div id="quizResult"></div>
+
+</div>
+</div>
+        <div class="controls">
+
+            <button
+                onclick="previousCard()"
+            >
+                ⬅ Previous
+            </button>
+
+            <button
+                onclick="nextCard()"
+            >
+                Next ➡
+            </button>
+            <button
+    onclick="startQuiz()"
+>
+    Quiz Me
+</button>
+
+        </div>
+
+        <button
+            class="backBtn"
+            onclick="goBack()"
+        >
+            Back To DrawAI
+        </button>
+
+    </div>
+
+    <script src="js/flashcards.js"></script>
+
+</body>
+
+</html>

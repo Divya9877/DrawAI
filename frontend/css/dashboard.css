@@ -1,0 +1,129 @@
+body{
+
+    margin:0;
+
+    font-family:'Segoe UI',sans-serif;
+
+    background:
+    linear-gradient(
+        135deg,
+        #020617,
+        #0f172a,
+        #1e293b
+    );
+
+    color:white;
+
+    min-height:100vh;
+}
+
+.dashboard{
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:40px;
+}
+
+.dashboard h1{
+
+    text-align:center;
+
+    font-size:34px;
+
+    margin-bottom:25px;
+}
+
+.stats-grid{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    flex-wrap:nowrap;
+
+    margin-bottom:35px;
+}
+
+.stat-card{
+
+    flex:1;
+
+    background:#0f172a;
+
+    border-radius:18px;
+
+    padding:15px;
+
+    text-align:center;
+
+    border:
+    1px solid rgba(
+        255,255,255,0.08
+    );
+
+    transition:0.3s;
+}
+
+.stat-card:hover{
+
+    transform:
+    translateY(-3px);
+}
+
+.stat-card h2{
+
+    font-size:28px;
+
+    color:#38bdf8;
+
+    margin:0;
+}
+
+.stat-card p{
+
+    margin-top:8px;
+
+    color:#cbd5e1;
+
+    font-size:13px;
+}
+.recent-card{
+
+    background:
+    rgba(255,255,255,0.08);
+
+    backdrop-filter:
+    blur(15px);
+
+    border-radius:25px;
+
+    padding:30px;
+
+    margin-top:30px;
+}
+
+#doodleChart{
+
+    max-height:200px;
+}
+
+button{
+
+    margin-top:30px;
+
+    border:none;
+
+    background:#8b5cf6;
+
+    color:white;
+
+    padding:15px 30px;
+
+    border-radius:15px;
+
+    cursor:pointer;
+}

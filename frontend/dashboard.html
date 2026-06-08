@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>
+        DrawAI Dashboard
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/dashboard.css"
+    >
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <h1>
+            📊 DrawAI Dashboard
+        </h1>
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <h2 id="totalDoodles">0</h2>
+        <p>🎨 Doodles</p>
+    </div>
+
+    <div class="stat-card">
+        <h2 id="uniqueObjects">0</h2>
+        <p>🧠 Objects</p>
+    </div>
+
+    <div class="stat-card">
+        <h2 id="topObject">-</h2>
+        <p>🏆 Top Topic</p>
+    </div>
+
+    <div class="stat-card">
+        <h2 id="flashcardCount">0</h2>
+        <p>📚 Flashcards</p>
+    </div>
+
+    <div class="stat-card">
+        <h2 id="chatCount">0</h2>
+        <p>💬 Chats</p>
+    </div>
+
+    <div class="stat-card">
+        <h2 id="learningStreak">7</h2>
+        <p>🔥 Streak</p>
+    </div>
+
+</div>
+        </div>
+
+        <div class="recent-card">
+           <h2>
+        Doodle Analytics
+    </h2>
+
+    <canvas
+        id="doodleChart"
+    ></canvas>
+
+        </div>
+
+
+        <button
+            onclick="goBack()"
+        >
+            Back
+        </button>
+
+    </div>
+
+    <script
+        src="js/dashboard.js"
+    ></script>
+
+</body>
+
+</html>
